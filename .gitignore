@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+
+# Node
+node_modules/
+build/
+.env.local
+
+# Data (logs reset each deployment)
+backend/data/logs.json
+
+# OS
+.DS_Store
