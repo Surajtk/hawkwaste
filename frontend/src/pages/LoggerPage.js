@@ -1,9 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-const API = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API = process.env.REACT_APP_API_URL || "http://localhost:5001";
 const SHIFTS = ["breakfast", "lunch", "dinner"];
-
 const SHIFT_EMOJI = { breakfast: "🌅", lunch: "☀️", dinner: "🌙" };
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function pctColor(pct) {
   if (pct >= 75) return "var(--scarlet)";
@@ -25,12 +28,24 @@ function pctBadgeClass(pct) {
 
 export default function LoggerPage() {
   const [shift, setShift] = useState("lunch");
+  const [date, setDate]   = useState(todayStr());
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [batchData, setBatchData] = useState(null);
+  const [batchLoading, setBatchLoading] = useState(false);
   const fileRef = useRef();
+
+  useEffect(() => {
+    setBatchLoading(true);
+    setBatchData(null);
+    fetch(`${API}/batch-optimize?shift=${shift}`)
+      .then(r => r.json())
+      .then(d => { setBatchData(d); setBatchLoading(false); })
+      .catch(() => setBatchLoading(false));
+  }, [shift]);
 
   const handleFile = (e) => {
     const file = e.target.files[0];
@@ -59,6 +74,7 @@ export default function LoggerPage() {
       const form = new FormData();
       form.append("image", image);
       form.append("shift", shift);
+      form.append("date", date);
       const res = await fetch(`${API}/analyze-photo`, { method: "POST", body: form });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -88,7 +104,7 @@ export default function LoggerPage() {
 
       <div className="logger-grid gap-24">
         {/* Left column — controls */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
           {/* Shift selector */}
           <div className="card gap-16">
@@ -103,6 +119,29 @@ export default function LoggerPage() {
                   {SHIFT_EMOJI[s]} {s}
                 </button>
               ))}
+            </div>
+            <div style={{ marginTop: 8 }}>
+              <div className="section-label" style={{ marginBottom: 8 }}>Date</div>
+              <input
+                type="date"
+                value={date}
+                max={todayStr()}
+                onChange={e => setDate(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "11px 14px",
+                  border: "1.5px solid var(--lighter)",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: 15,
+                  fontFamily: "var(--font-body)",
+                  color: "var(--dark)",
+                  background: "var(--white)",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={e => e.target.style.borderColor = "var(--scarlet)"}
+                onBlur={e => e.target.style.borderColor = "var(--lighter)"}
+              />
             </div>
           </div>
 
@@ -125,7 +164,7 @@ export default function LoggerPage() {
               )}
             </div>
             {preview && (
-              <div style={{ padding: "10px 14px", borderTop: "1px solid var(--lighter)" }}>
+              <div style={{ padding: "12px 16px", borderTop: "1px solid var(--lighter)" }}>
                 <button className="btn-ghost" onClick={(e) => { e.stopPropagation(); reset(); }}>
                   Remove photo
                 </button>
@@ -156,9 +195,9 @@ export default function LoggerPage() {
         {/* Right column — result */}
         <div>
           {!result && !loading && (
-            <div className="card" style={{ textAlign: "center", padding: "48px 24px" }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🗑️</div>
-              <div style={{ fontSize: 14, color: "var(--muted)", fontWeight: 300 }}>
+            <div className="card" style={{ textAlign: "center", padding: "56px 28px" }}>
+              <div style={{ fontSize: 48, marginBottom: 14 }}>🗑️</div>
+              <div style={{ fontSize: 16, color: "var(--muted)", fontWeight: 300 }}>
                 Result will appear here after analysis
               </div>
             </div>
@@ -166,24 +205,24 @@ export default function LoggerPage() {
 
           {result && (
             <div className="result-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
                 <div>
                   <div className="section-label">{result.shift} shift · analysis</div>
                   <div className="result-pct" style={{ color: pctColor(result.fullness_percent) }}>
                     {result.fullness_percent}%
                   </div>
-                  <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 2 }}>bin fullness</div>
+                  <div style={{ fontSize: 15, color: "var(--muted)", marginTop: 4 }}>bin fullness</div>
                 </div>
                 <span className={`badge ${pctBadgeClass(result.fullness_percent)}`}>
                   {pctLabel(result.fullness_percent)}
                 </span>
               </div>
 
-              <div style={{ padding: "14px 16px", background: "var(--lighter)", borderRadius: 8 }}>
+              <div style={{ padding: "18px 20px", background: "var(--lighter)", borderRadius: 10 }}>
                 <div className="result-lbs">
                   ~<strong>{result.estimated_lbs} lbs</strong> estimated food waste
                 </div>
-                <div className="result-meta" style={{ marginTop: 6 }}>
+                <div className="result-meta" style={{ marginTop: 8 }}>
                   Confidence:{" "}
                   <span style={{ textTransform: "capitalize", fontWeight: 500 }}>
                     {result.confidence}
@@ -197,12 +236,79 @@ export default function LoggerPage() {
                 ✓ Saved to dashboard
               </div>
 
-              <div style={{ marginTop: 16 }}>
+              <div style={{ marginTop: 18 }}>
                 <button className="btn-ghost" onClick={reset}>Log another bin</button>
               </div>
             </div>
           )}
         </div>
+      </div>
+
+      {/* Batch Optimize */}
+      <div className="card gap-24" style={{ marginTop: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <div className="section-label">Pre-Shift Batch Guide</div>
+            <div style={{ fontSize: 14, color: "var(--muted)", marginTop: 4 }}>
+              Recommended batch sizes based on historical waste for <strong style={{ textTransform: "capitalize" }}>{shift}</strong>
+            </div>
+          </div>
+          {batchData && (
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--green)" }}>Projected savings</div>
+              <div style={{ fontSize: 24, fontFamily: "var(--font-display)", color: "var(--green)", marginTop: 2 }}>
+                {batchData.summary?.projected_lbs_saved} lbs
+              </div>
+              <div style={{ fontSize: 13, color: "var(--muted)" }}>${batchData.summary?.projected_cost_saved} · {batchData.summary?.projected_co2_avoided_lbs} lbs CO₂</div>
+            </div>
+          )}
+        </div>
+
+        {batchLoading && <div style={{ fontSize: 15, color: "var(--muted)" }}>Loading batch recommendations…</div>}
+
+        {batchData?.chef_briefing && (
+          <div style={{
+            padding: "16px 18px", background: "var(--lighter)", borderRadius: 10,
+            fontSize: 15, color: "var(--dark)", fontStyle: "italic", borderLeft: "4px solid var(--scarlet)",
+            lineHeight: 1.55,
+          }}>
+            {batchData.chef_briefing}
+          </div>
+        )}
+
+        {batchData?.items?.filter(i => i.action === "reduce").length > 0 && (
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted)", marginBottom: 10 }}>
+              Items to cut
+            </div>
+            {batchData.items.filter(i => i.action === "reduce").slice(0, 6).map((item, i) => (
+              <div key={i} style={{
+                display: "grid", gridTemplateColumns: "1fr 90px 90px 80px",
+                gap: 12, padding: "11px 0",
+                borderBottom: "1px solid var(--lighter)", alignItems: "center",
+              }}>
+                <div>
+                  <div style={{ fontSize: 15, color: "var(--dark)" }}>{item.item}</div>
+                  <div style={{ fontSize: 13, color: "var(--muted)" }}>{item.station} · {item.historical_waste_pct}% hist. waste</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 15, color: "var(--muted)", textDecoration: "line-through" }}>{item.current_batch_lbs} lbs</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 17, fontWeight: 600, color: "var(--green)" }}>{item.recommended_lbs} lbs</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <span style={{
+                    background: "var(--green-bg)", color: "var(--green)",
+                    fontSize: 13, fontWeight: 600, padding: "4px 10px", borderRadius: 99,
+                  }}>
+                    -{item.lbs_saved} lbs
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="site-footer">

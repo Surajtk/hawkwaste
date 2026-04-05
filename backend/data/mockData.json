@@ -57,6 +57,54 @@
       "notes": "Lentils and zucchini heavily wasted — students prefer protein-forward items at dinner."
     },
     {
+      "date": "2026-03-29",
+      "shift": "breakfast",
+      "entries": [
+        { "station": "Breakfast Entree Line", "item": "Scrambled Eggs", "portionsMade": 80, "portionsLeft": 11, "wastePercent": 14 },
+        { "station": "Breakfast Entree Line", "item": "Churro Pancakes", "portionsMade": 55, "portionsLeft": 14, "wastePercent": 25 },
+        { "station": "Breakfast Entree Line", "item": "Maple Smoked Beef and Pork Sausage", "portionsMade": 55, "portionsLeft": 4, "wastePercent": 7 },
+        { "station": "Breakfast Entree Line", "item": "Ranch Breakfast Potatoes", "portionsMade": 50, "portionsLeft": 19, "wastePercent": 38 },
+        { "station": "Breakfast Entree Line", "item": "Meatless Vegetarian Sausage Patty", "portionsMade": 35, "portionsLeft": 16, "wastePercent": 46 },
+        { "station": "Bakery", "item": "Blueberry Muffin", "portionsMade": 40, "portionsLeft": 20, "wastePercent": 50 },
+        { "station": "Bakery", "item": "Cinnamon Roll", "portionsMade": 30, "portionsLeft": 7, "wastePercent": 23 },
+        { "station": "Fruit and Yogurt Bar", "item": "Cubed Cantaloupe", "portionsMade": 30, "portionsLeft": 5, "wastePercent": 17 }
+      ],
+      "totalWasteLbs": 13.6,
+      "notes": "Saturday breakfast — lower traffic. Blueberry muffins stale by mid-morning. Meatless sausage ignored as usual."
+    },
+    {
+      "date": "2026-03-29",
+      "shift": "lunch",
+      "entries": [
+        { "station": "Global Kitchen", "item": "Butter Chicken", "portionsMade": 100, "portionsLeft": 5, "wastePercent": 5 },
+        { "station": "Global Kitchen", "item": "Garlic Roasted Cauliflower", "portionsMade": 55, "portionsLeft": 26, "wastePercent": 47 },
+        { "station": "Global Kitchen", "item": "Naan Bread", "portionsMade": 80, "portionsLeft": 9, "wastePercent": 11 },
+        { "station": "Global Kitchen", "item": "Brown Rice", "portionsMade": 85, "portionsLeft": 30, "wastePercent": 35 },
+        { "station": "Pizza", "item": "Cheese Pizza", "portionsMade": 80, "portionsLeft": 4, "wastePercent": 5 },
+        { "station": "Pizza", "item": "Pepperoni Pizza", "portionsMade": 75, "portionsLeft": 5, "wastePercent": 7 },
+        { "station": "Daily Grill", "item": "Shoestring French Fries", "portionsMade": 70, "portionsLeft": 3, "wastePercent": 4 },
+        { "station": "Chef Made Soups", "item": "Lentil Soup", "portionsMade": 50, "portionsLeft": 24, "wastePercent": 48 },
+        { "station": "Bakery", "item": "Chocolate Chip Cookies", "portionsMade": 55, "portionsLeft": 6, "wastePercent": 11 }
+      ],
+      "totalWasteLbs": 21.4,
+      "notes": "Butter Chicken nearly sold out again. Cauliflower and lentil soup high waste. Rice overproduced."
+    },
+    {
+      "date": "2026-03-29",
+      "shift": "dinner",
+      "entries": [
+        { "station": "Global Kitchen", "item": "Jerk Chicken", "portionsMade": 80, "portionsLeft": 7, "wastePercent": 9 },
+        { "station": "Global Kitchen", "item": "Roasted Zucchini", "portionsMade": 50, "portionsLeft": 25, "wastePercent": 50 },
+        { "station": "Global Kitchen", "item": "Lentils and Spinach", "portionsMade": 55, "portionsLeft": 28, "wastePercent": 51 },
+        { "station": "Global Kitchen", "item": "Brown Rice", "portionsMade": 80, "portionsLeft": 29, "wastePercent": 36 },
+        { "station": "Pizza", "item": "Cheese Pizza", "portionsMade": 60, "portionsLeft": 10, "wastePercent": 17 },
+        { "station": "Daily Grill", "item": "Veggie Burger", "portionsMade": 40, "portionsLeft": 18, "wastePercent": 45 },
+        { "station": "Bakery", "item": "Gooey Bar", "portionsMade": 35, "portionsLeft": 15, "wastePercent": 43 }
+      ],
+      "totalWasteLbs": 19.8,
+      "notes": "Zucchini and lentils worst performers. Veggie burger wasted again — students chose other protein options."
+    },
+    {
       "date": "2026-03-30",
       "shift": "breakfast",
       "entries": [
@@ -201,8 +249,8 @@
     }
   ],
   "weekSummary": {
-    "totalWasteLbs": 189.7,
-    "avgWastePerShift": 15.8,
+    "totalWasteLbs": 244.5,
+    "avgWastePerShift": 16.3,
     "worstItems": [
       { "item": "Salsa Roja Cauliflower (breakfast)", "avgWaste": "70%" },
       { "item": "Roasted Zucchini", "avgWaste": "51%" },
