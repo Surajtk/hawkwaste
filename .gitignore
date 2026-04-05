@@ -14,6 +14,6 @@ build/
 backend/data/logs.json
 backend/data/bin_images/
 
-# OS
+# OS / editor
 .DS_Store
 .claude/
